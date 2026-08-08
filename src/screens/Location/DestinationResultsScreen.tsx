@@ -85,7 +85,7 @@ export default function DestinationResultsScreen({ route, navigation }: Props) {
           <View style={styles.trackButtonContainer}>
             <Button 
               mode="contained" 
-              onPress={() => navigation.navigate('LiveTracking', { busId: item.id })}
+              onPress={() => navigation.navigate('LiveTracking', { busId: item.id, destination: selectedDestination || undefined })}
               style={[styles.trackButton, { backgroundColor: theme.colors.primary }]}
               icon="crosshairs-gps"
               contentStyle={{ paddingVertical: 4 }}

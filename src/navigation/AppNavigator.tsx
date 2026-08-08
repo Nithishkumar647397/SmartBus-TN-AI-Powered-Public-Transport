@@ -7,9 +7,12 @@ import SplashScreen from '../screens/Splash/SplashScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import OtpVerificationScreen from '../screens/Auth/OtpVerificationScreen';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
+import SettingsScreen from '../screens/Settings/SettingsScreen';
+import AlertsScreen from '../screens/Alerts/AlertsScreen';
 import HomeScreen from '../screens/Home/HomeScreen';
 import LocationPickerScreen from '../screens/Location/LocationPickerScreen';
 import DestinationResultsScreen from '../screens/Location/DestinationResultsScreen';
+import BusDetailsScreen from '../screens/BusDetails/BusDetailsScreen';
 import { useAppTheme } from '../utils/theme';
 
 export type BottomTabParamList = {
@@ -27,7 +30,7 @@ export type RootStackParamList = {
   MainTabs: undefined;
   LocationPicker: undefined;
   DestinationResults: { origin: string };
-  LiveTracking: { busId: string };
+  LiveTracking: { busId: string; destination?: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -37,11 +40,6 @@ const Tab = createBottomTabNavigator<BottomTabParamList>();
 const StubScreen = ({ name }: { name: string }) => (
   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
     <Text>{name} Screen Stub</Text>
-  </View>
-);
-const LiveTrackingStub = ({ route }: any) => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text>Live Tracking Stub for Bus ID: {route.params?.busId}</Text>
   </View>
 );
 
@@ -87,8 +85,8 @@ function MainTabNavigator() {
     >
       <Tab.Screen name="HomeTab" component={HomeScreen} />
       <Tab.Screen name="LiveTab" children={() => <StubScreen name="Live" />} />
-      <Tab.Screen name="AlertsTab" children={() => <StubScreen name="Alerts" />} />
-      <Tab.Screen name="ProfileTab" children={() => <StubScreen name="Profile" />} />
+      <Tab.Screen name="AlertsTab" component={AlertsScreen} />
+      <Tab.Screen name="ProfileTab" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
@@ -103,7 +101,7 @@ export default function AppNavigator() {
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
       <Stack.Screen name="LocationPicker" component={LocationPickerScreen} />
       <Stack.Screen name="DestinationResults" component={DestinationResultsScreen} />
-      <Stack.Screen name="LiveTracking" component={LiveTrackingStub} />
+      <Stack.Screen name="LiveTracking" component={BusDetailsScreen} />
     </Stack.Navigator>
   );
 }
