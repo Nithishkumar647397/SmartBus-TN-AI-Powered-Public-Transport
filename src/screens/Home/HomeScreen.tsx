@@ -36,13 +36,13 @@ export default function HomeScreen() {
       
       {/* Soft Pastel Animated Background Orbs */}
       <Animated.View style={[styles.glowOrb, { transform: [{ scale: pulseAnim }] }]}>
-        <LinearGradient colors={['rgba(99, 102, 241, 0.15)', 'rgba(99, 102, 241, 0)']} style={StyleSheet.absoluteFillObject} />
+        <LinearGradient colors={['rgba(99, 102, 241, 0.15)', 'rgba(99, 102, 241, 0)']} style={StyleSheet.absoluteFill} />
       </Animated.View>
       <Animated.View style={[styles.glowOrb2, { transform: [{ scale: pulseAnim }] }]}>
-        <LinearGradient colors={['rgba(236, 72, 153, 0.12)', 'rgba(236, 72, 153, 0)']} style={StyleSheet.absoluteFillObject} />
+        <LinearGradient colors={['rgba(236, 72, 153, 0.12)', 'rgba(236, 72, 153, 0)']} style={StyleSheet.absoluteFill} />
       </Animated.View>
       <Animated.View style={[styles.glowOrb3, { transform: [{ scale: pulseAnim }] }]}>
-        <LinearGradient colors={['rgba(56, 189, 248, 0.15)', 'rgba(56, 189, 248, 0)']} style={StyleSheet.absoluteFillObject} />
+        <LinearGradient colors={['rgba(56, 189, 248, 0.15)', 'rgba(56, 189, 248, 0)']} style={StyleSheet.absoluteFill} />
       </Animated.View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
