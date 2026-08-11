@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, FlatList, TouchableOpacity, SafeAreaView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Text, Button, Surface } from 'react-native-paper';
-import { useAppTheme } from '../../utils/theme';
+import { useAppTheme, AppTheme } from '../../utils/theme';
 import { MaterialIcons } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/AppNavigator';
 import { MOCK_PLACES } from '../../data/mockPlaces';
+import { useTranslation } from 'react-i18next';
 
 type LocationPickerScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LocationPicker'>;
 
@@ -15,6 +16,9 @@ interface Props {
 
 export default function LocationPickerScreen({ navigation }: Props) {
   const theme = useAppTheme();
+  const styles = useStyles(theme);
+  const { t } = useTranslation();
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
@@ -33,7 +37,7 @@ export default function LocationPickerScreen({ navigation }: Props) {
   };
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView 
         style={styles.container} 
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -49,10 +53,10 @@ export default function LocationPickerScreen({ navigation }: Props) {
             <MaterialIcons name="my-location" size={80} color={theme.colors.primary} />
           </View>
           
-          <Text style={[styles.title, { color: theme.colors.text }]}>
-            Where are you right now?
+          <Text style={styles.title}>
+            {t('location.pickerTitle')}
           </Text>
-          <Text style={[styles.subtitle, { color: theme.colors.secondaryText || '#757575' }]}>
+          <Text style={styles.subtitle}>
             We'll show you buses near you in real time
           </Text>
 
@@ -63,34 +67,34 @@ export default function LocationPickerScreen({ navigation }: Props) {
             contentStyle={styles.buttonContent}
             icon="crosshairs-gps"
           >
-            Use My Current Location
+            {t('location.useCurrentLoc')}
           </Button>
 
           <View style={styles.dividerContainer}>
-            <View style={[styles.divider, { backgroundColor: '#E0E0E0' }]} />
-            <Text style={[styles.dividerText, { color: theme.colors.secondaryText || '#757575' }]}>or</Text>
-            <View style={[styles.divider, { backgroundColor: '#E0E0E0' }]} />
+            <View style={styles.divider} />
+            <Text style={styles.dividerText}>or</Text>
+            <View style={styles.divider} />
           </View>
 
-          <Surface style={[styles.searchContainer, { elevation: 2, backgroundColor: theme.colors.surface }]} >
-            <MaterialIcons name="search" size={24} color={theme.colors.secondaryText || '#757575'} style={styles.searchIcon} />
+          <Surface style={styles.searchContainer} >
+            <MaterialIcons name="search" size={24} color={theme.colors.secondaryText} style={styles.searchIcon} />
             <TextInput
-              style={[styles.searchInput, { color: theme.colors.text }]}
-              placeholder="Search for your town..."
-              placeholderTextColor={theme.colors.secondaryText || '#757575'}
+              style={styles.searchInput}
+              placeholder={t('location.searchPlaceholder')}
+              placeholderTextColor={theme.colors.secondaryText}
               value={searchQuery}
               onChangeText={handleSearch}
             />
           </Surface>
 
           {searchQuery.length > 0 && suggestions.length === 0 && (
-            <Surface style={[styles.suggestionsContainer, { elevation: 4, backgroundColor: theme.colors.surface, padding: 16 }]}>
-              <Text style={{ color: theme.colors.secondaryText || '#757575', textAlign: 'center' }}>No results found</Text>
+            <Surface style={[styles.suggestionsContainer, { padding: 16 }]}>
+              <Text style={{ color: theme.colors.secondaryText, textAlign: 'center' }}>No results found</Text>
             </Surface>
           )}
 
           {suggestions.length > 0 && (
-            <Surface style={[styles.suggestionsContainer, { elevation: 4, backgroundColor: theme.colors.surface }]}>
+            <Surface style={styles.suggestionsContainer}>
               <FlatList
                 data={suggestions}
                 keyExtractor={(item) => item}
@@ -100,11 +104,11 @@ export default function LocationPickerScreen({ navigation }: Props) {
                     style={styles.suggestionItem} 
                     onPress={() => handleSelectLocation(item)}
                   >
-                    <MaterialIcons name="location-on" size={20} color={theme.colors.secondaryText || '#757575'} />
-                    <Text style={[styles.suggestionText, { color: theme.colors.text }]}>{item}</Text>
+                    <MaterialIcons name="location-on" size={20} color={theme.colors.secondaryText} />
+                    <Text style={styles.suggestionText}>{item}</Text>
                   </TouchableOpacity>
                 )}
-                ItemSeparatorComponent={() => <View style={[styles.separator, { backgroundColor: '#F0F0F0' }]} />}
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
               />
             </Surface>
           )}
@@ -114,9 +118,10 @@ export default function LocationPickerScreen({ navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = (theme: AppTheme) => StyleSheet.create({
   safeArea: {
     flex: 1,
+    backgroundColor: theme.colors.background,
   },
   container: {
     flex: 1,
@@ -145,12 +150,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 8,
     textAlign: 'center',
+    color: theme.colors.text,
   },
   subtitle: {
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 32,
     lineHeight: 24,
+    color: theme.colors.secondaryText,
   },
   primaryButton: {
     borderRadius: 12,
@@ -167,10 +174,12 @@ const styles = StyleSheet.create({
   divider: {
     flex: 1,
     height: 1,
+    backgroundColor: theme.colors.outline,
   },
   dividerText: {
     marginHorizontal: 16,
     fontSize: 14,
+    color: theme.colors.secondaryText,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -178,7 +187,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 16,
     height: 56,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.surface,
     shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowRadius: 10,
@@ -192,13 +201,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     height: '100%',
+    color: theme.colors.text,
   },
   suggestionsContainer: {
     marginTop: 8,
     borderRadius: 16,
     maxHeight: 200,
     overflow: 'hidden',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.surface,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 10,
@@ -213,8 +223,10 @@ const styles = StyleSheet.create({
   suggestionText: {
     marginLeft: 12,
     fontSize: 16,
+    color: theme.colors.text,
   },
   separator: {
     height: 1,
+    backgroundColor: theme.colors.outline,
   }
 });
