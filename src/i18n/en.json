@@ -80,5 +80,53 @@
     "newFeature": "New Feature",
     "yesterday": "Yesterday",
     "newFeatureBody": "AI-powered crowd estimation now available for all routes. Check estimated capacity before you board!"
+  },
+  "auth": {
+    "brandTitle": "SmartBus TN",
+    "brandTagline": "Smart Travel for Tamil Nadu",
+    "welcome": "Welcome Back!",
+    "loginSubtitle": "Sign in to continue your journey",
+    "mobileLabel": "Mobile Number",
+    "mobilePlaceholder": "Enter your mobile number",
+    "sendOtp": "Send OTP",
+    "noAccount": "Don't have an account? ",
+    "register": "Register",
+    "or": "OR SIGN IN WITH",
+    "google": "Google",
+    "verifyNumber": "Verify your number",
+    "verifySubtitle": "Enter the 6-digit code sent to +91 {{mobile}}",
+    "resendIn": "Resend code in {{timer}}s",
+    "resendOtp": "Resend OTP",
+    "verifyBtn": "Verify & Continue",
+    "createAccount": "Create Account",
+    "regSubtitle": "Join SmartBus TN for a better commute",
+    "fullName": "Full Name",
+    "namePlaceholder": "Enter your full name",
+    "haveAccount": "Already have an account? ",
+    "login": "Login"
+  },
+  "location": {
+    "pickerTitle": "Select Location",
+    "searchPlaceholder": "Search stops or areas...",
+    "useCurrentLoc": "Use Current Location",
+    "recentStops": "Recent Stops",
+    "nearbyStops": "Nearby Stops",
+    "destTitle": "Destination Results",
+    "directBuses": "Direct Buses",
+    "directSub": "No transfers needed",
+    "fromTo": "{{origin}} to {{destination}}"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search routes, bus stops...",
+    "recentSearches": "Recent Searches"
+  },
+  "live": {
+    "title": "Live Tracking",
+    "mapPlaceholder": "Map View Loading..."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet"
   }
 }
