@@ -15,6 +15,7 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'M
 export default function HomeScreen() {
   const theme = useAppTheme();
   const navigation = useNavigation<HomeScreenNavigationProp>();
+  const [tripType, setTripType] = useState('NORMAL');
   
   const dummyBuses = [
     { id: '1', route: '101A', start: 'Guindy', dest: 'Karur', currentStop: 'Guindy National Park', eta: '5', capacity: 23, crowd: 'Moderate', status: 'LIVE' },
@@ -62,34 +63,52 @@ export default function HomeScreen() {
         {/* Search Card */}
         <View style={styles.searchCardContainer}>
           <View style={styles.searchCard}>
-            <TouchableOpacity 
-              style={styles.inputRow}
-              onPress={() => navigation.navigate('LocationPicker')}
-            >
-              <View style={[styles.iconChip, { backgroundColor: '#E8F5E9' }]}>
-                 <MaterialCommunityIcons name="target-account" size={20} color="#4CAF50" />
-              </View>
-              <Text style={styles.inputTextPlaceholder}>Current Location</Text>
-            </TouchableOpacity>
             
-            <View style={styles.dividerContainer}>
-              <View style={styles.verticalDashedLine} />
-              <TouchableOpacity style={styles.swapButtonWrapper}>
-                 <View style={styles.swapGradient}>
-                   <MaterialIcons name="swap-vert" size={20} color={theme.colors.primary} />
-                 </View>
+            {/* Trip Type Tabs */}
+            <View style={styles.tabContainer}>
+              {['NORMAL', 'EXPRESS', 'POINT-POINT'].map((type) => (
+                <TouchableOpacity 
+                  key={type} 
+                  onPress={() => setTripType(type)} 
+                  style={[styles.tabItem, tripType === type && styles.tabItemActive]}
+                >
+                  <Text style={[styles.tabText, tripType === type && styles.tabTextActive]}>{type}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <View style={styles.routeInputContainer}>
+              <View style={styles.routeLineContainer}>
+                <View style={styles.routeDot} />
+                <View style={styles.routeDottedLine} />
+                <View style={styles.routeDot} />
+              </View>
+              
+              <View style={styles.routeFieldsContainer}>
+                <TouchableOpacity style={styles.inputField} onPress={() => navigation.navigate('LocationPicker')}>
+                  <Text style={styles.inputLabel}>From</Text>
+                  <Text style={styles.inputValue}>Current Location</Text>
+                </TouchableOpacity>
+                
+                <View style={styles.inputDivider} />
+                
+                <TouchableOpacity style={styles.inputField} onPress={() => navigation.navigate('LocationPicker')}>
+                  <Text style={styles.inputLabel}>To</Text>
+                  <Text style={styles.inputValue}>Where to?</Text>
+                </TouchableOpacity>
+              </View>
+              
+              <TouchableOpacity style={styles.swapButtonWrapperNew}>
+                <View style={styles.swapGradientNew}>
+                  <MaterialIcons name="swap-vert" size={20} color={theme.colors.primary} />
+                </View>
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity 
-              style={styles.inputRow}
-              onPress={() => navigation.navigate('LocationPicker')}
-            >
-              <View style={[styles.iconChip, { backgroundColor: '#FFEBEE' }]}>
-                 <MaterialCommunityIcons name="map-marker-radius" size={20} color="#F44336" />
-              </View>
-              <Text style={styles.inputTextPlaceholder}>Where to?</Text>
+            <TouchableOpacity style={styles.searchButton}>
+              <Text style={styles.searchButtonText}>Find buses</Text>
             </TouchableOpacity>
+
           </View>
         </View>
 
@@ -199,13 +218,28 @@ const styles = StyleSheet.create({
   searchCardContainer: { paddingHorizontal: 20, marginTop: 24, zIndex: 10 },
   searchCard: { backgroundColor: '#FFFFFF', borderRadius: 20, padding: 20, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 15, shadowOffset: {width:0, height:8}, elevation: 4 },
   
-  inputRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12 },
-  iconChip: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginRight: 16 },
-  inputTextPlaceholder: { fontSize: 17, color: '#64748B', fontWeight: '600', flex: 1 },
-  dividerContainer: { height: 24, marginLeft: 20, position: 'relative', justifyContent: 'center' },
-  verticalDashedLine: { position: 'absolute', left: -1, top: -4, bottom: -4, width: 2, borderStyle: 'dashed', borderWidth: 1.5, borderColor: '#E2E8F0' },
-  swapButtonWrapper: { position: 'absolute', right: 0, zIndex: 10 },
-  swapGradient: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#F8FAFC', alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5, shadowOffset: {width:0,height:2}, borderWidth: 1, borderColor: '#E2E8F0' },
+  tabContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
+  tabItem: { paddingVertical: 10, paddingHorizontal: 8, borderBottomWidth: 2, borderBottomColor: 'transparent' },
+  tabItemActive: { borderBottomColor: '#0D1B3E' },
+  tabText: { fontSize: 13, fontWeight: '600', color: '#94A3B8' },
+  tabTextActive: { color: '#0D1B3E', fontWeight: '800' },
+
+  routeInputContainer: { flexDirection: 'row', alignItems: 'center' },
+  routeLineContainer: { alignItems: 'center', marginRight: 16 },
+  routeDot: { width: 14, height: 14, borderRadius: 7, borderWidth: 2, borderColor: '#0D1B3E', backgroundColor: '#FFFFFF' },
+  routeDottedLine: { width: 2, height: 35, borderStyle: 'dashed', borderWidth: 1, borderColor: '#CBD5E1', marginVertical: 4 },
+  
+  routeFieldsContainer: { flex: 1 },
+  inputField: { paddingVertical: 8 },
+  inputLabel: { fontSize: 12, color: '#64748B', marginBottom: 4 },
+  inputValue: { fontSize: 16, color: '#0F172A', fontWeight: '600' },
+  inputDivider: { height: 1, backgroundColor: '#F1F5F9', marginVertical: 4 },
+  
+  swapButtonWrapperNew: { padding: 8, marginLeft: 8 },
+  swapGradientNew: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#F8FAFC', alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5, shadowOffset: {width:0,height:2}, borderWidth: 1, borderColor: '#E2E8F0' },
+
+  searchButton: { backgroundColor: '#0D1B3E', borderRadius: 12, paddingVertical: 14, alignItems: 'center', marginTop: 20 },
+  searchButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
   
   sectionContainer: { marginTop: 32, paddingHorizontal: 20 },
   
