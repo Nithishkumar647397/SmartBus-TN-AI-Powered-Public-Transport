@@ -32,7 +32,16 @@ export default function BusDetailsScreen() {
   const theme = useAppTheme();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<BusDetailsRouteProp>();
-  const { destination } = route.params || {};
+  const { destination, serviceType } = route.params || {};
+
+  const getServiceBadgeText = () => {
+    switch(serviceType) {
+      case 'express': return 'EXP';
+      case 'point_to_point': return 'P2P';
+      case 'normal':
+      default: return 'NORMAL';
+    }
+  };
 
   const [notifyEnabled, setNotifyEnabled] = useState(!!destination);
 
@@ -60,7 +69,7 @@ export default function BusDetailsScreen() {
                 <Text style={styles.badgeSolidText}>101 TNSTC</Text>
               </View>
               <View style={styles.badgeOutline}>
-                <Text style={styles.badgeOutlineText}>EXP</Text>
+                <Text style={styles.badgeOutlineText}>{getServiceBadgeText()}</Text>
               </View>
             </View>
             <View style={[styles.statusPill, { backgroundColor: '#DCFCE7' }]}>

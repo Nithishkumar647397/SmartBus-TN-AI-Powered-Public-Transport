@@ -18,10 +18,18 @@ export default function HomeScreen() {
   const [tripType, setTripType] = useState('NORMAL');
   
   const dummyBuses = [
-    { id: '1', route: '101A', start: 'Guindy', dest: 'Karur', currentStop: 'Guindy National Park', eta: '5', capacity: 23, crowd: 'Moderate', status: 'LIVE' },
-    { id: '2', route: '21G', start: 'Tambaram', dest: 'Broadway', currentStop: 'Chromepet', eta: '2', capacity: 5, crowd: 'High', status: 'LIVE' },
-    { id: '3', route: '570', start: 'Kelambakkam', dest: 'CMBT', currentStop: 'Navalur', eta: '18', capacity: 45, crowd: 'Low', status: 'Delayed' },
-  ];
+    { id: '1', route: '101A', start: 'Guindy', dest: 'Karur', currentStop: 'Guindy National Park', eta: '5', capacity: 23, crowd: 'Moderate', status: 'LIVE', serviceType: 'normal' },
+    { id: '2', route: '21G', start: 'Tambaram', dest: 'Broadway', currentStop: 'Chromepet', eta: '2', capacity: 5, crowd: 'High', status: 'LIVE', serviceType: 'express' },
+    { id: '3', route: '570', start: 'Kelambakkam', dest: 'CMBT', currentStop: 'Navalur', eta: '18', capacity: 45, crowd: 'Low', status: 'Delayed', serviceType: 'point_to_point' },
+  ] as const;
+
+  const tripTypeMapping: Record<string, string> = {
+    'NORMAL': 'normal',
+    'EXPRESS': 'express',
+    'POINT-POINT': 'point_to_point'
+  };
+
+  const filteredBuses = dummyBuses.filter(bus => bus.serviceType === tripTypeMapping[tripType]);
 
   const getStatusColor = (status: string, crowd: string) => {
     if (status === 'Delayed' || crowd === 'High') return theme.colors.error;
@@ -138,8 +146,13 @@ export default function HomeScreen() {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>Live buses near you</Text>
           
-          {dummyBuses.map((bus) => (
-            <View style={styles.busCard} key={bus.id}>
+          {filteredBuses.map((bus) => (
+            <TouchableOpacity 
+              style={styles.busCard} 
+              key={bus.id} 
+              onPress={() => navigation.navigate('LiveTracking', { busId: bus.id, serviceType: bus.serviceType })}
+              activeOpacity={0.8}
+            >
               
               <View style={styles.busCardHeaderRow}>
                 <View style={styles.busCardLeftRow}>
@@ -182,7 +195,7 @@ export default function HomeScreen() {
                 </View>
               </View>
 
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
 

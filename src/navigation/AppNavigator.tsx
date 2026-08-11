@@ -30,7 +30,7 @@ export type RootStackParamList = {
   MainTabs: undefined;
   LocationPicker: undefined;
   DestinationResults: { origin: string };
-  LiveTracking: { busId: string; destination?: string };
+  LiveTracking: { busId: string; destination?: string; serviceType?: 'normal' | 'express' | 'point_to_point' };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

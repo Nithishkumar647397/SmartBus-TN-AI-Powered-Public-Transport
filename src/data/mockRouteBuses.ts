@@ -12,8 +12,9 @@ export interface RouteBus {
   totalCapacity: number;
   crowdLevel: 'low' | 'moderate' | 'high';
   status: 'On Time' | 'Delayed';
+  // serviceType is fixed metadata assigned per registered bus/route — NOT inferred from GPS or live tracking data. GPS is used only for live position/ETA after this classification is already known.
+  serviceType: 'normal' | 'express' | 'point_to_point';
 }
-
 export const mockRouteBuses: RouteBus[] = [
   {
     id: 'bus_1',
@@ -29,6 +30,7 @@ export const mockRouteBuses: RouteBus[] = [
     totalCapacity: 50,
     crowdLevel: 'low',
     status: 'On Time',
+    serviceType: 'normal',
   },
   {
     id: 'bus_2',
@@ -44,6 +46,7 @@ export const mockRouteBuses: RouteBus[] = [
     totalCapacity: 50,
     crowdLevel: 'high',
     status: 'Delayed',
+    serviceType: 'express',
   },
   {
     id: 'bus_3',
@@ -59,5 +62,6 @@ export const mockRouteBuses: RouteBus[] = [
     totalCapacity: 50,
     crowdLevel: 'moderate',
     status: 'On Time',
+    serviceType: 'point_to_point',
   },
 ];
