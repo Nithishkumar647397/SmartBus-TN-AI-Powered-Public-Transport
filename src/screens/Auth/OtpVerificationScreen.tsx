@@ -6,12 +6,16 @@ import { Button, Surface } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { theme } from '../../utils/theme';
+import { useAppTheme, AppTheme } from '../../utils/theme';
 import { RootStackParamList } from '../../navigation/AppNavigator';
+import { useTranslation } from 'react-i18next';
 
 type OtpScreenRouteProp = RouteProp<RootStackParamList, 'OtpVerification'>;
 
 export default function OtpVerificationScreen() {
+  const theme = useAppTheme();
+  const styles = useStyles(theme);
+  const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<OtpScreenRouteProp>();
   const { mobile } = route.params;
@@ -73,7 +77,7 @@ export default function OtpVerificationScreen() {
           
           <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-              <MaterialIcons name="arrow-back" size={24} color="#0F172A" />
+              <MaterialIcons name="arrow-back" size={24} color={theme.colors.text} />
             </TouchableOpacity>
           </View>
 
@@ -84,9 +88,9 @@ export default function OtpVerificationScreen() {
           </View>
 
           <Surface style={styles.card}>
-            <Text style={styles.welcomeText}>Verify your number</Text>
+            <Text style={styles.welcomeText}>{t('auth.verifyNumber')}</Text>
             <Text style={styles.subtitleText}>
-              Enter the 6-digit code sent to +91 {mobile.slice(0,5)} {mobile.slice(5)}
+              {t('auth.verifySubtitle', { mobile: `${mobile.slice(0,5)} ${mobile.slice(5)}` })}
             </Text>
 
             <View style={styles.otpContainer}>
@@ -96,7 +100,7 @@ export default function OtpVerificationScreen() {
                   ref={(ref) => { inputRefs.current[index] = ref; }}
                   style={[
                     styles.otpInput,
-                    { borderColor: digit ? theme.colors.primary : '#E2E8F0' }
+                    { borderColor: digit ? theme.colors.primary : theme.colors.outline }
                   ]}
                   value={digit}
                   onChangeText={(val) => handleOtpChange(val, index)}
@@ -110,10 +114,10 @@ export default function OtpVerificationScreen() {
 
             <View style={styles.resendContainer}>
               {timer > 0 ? (
-                <Text style={styles.timerText}>Resend code in {timer}s</Text>
+                <Text style={styles.timerText}>{t('auth.resendIn', { timer })}</Text>
               ) : (
                 <TouchableOpacity onPress={onResendOtp}>
-                  <Text style={styles.resendLink}>Resend OTP</Text>
+                  <Text style={styles.resendLink}>{t('auth.resendOtp')}</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -125,12 +129,12 @@ export default function OtpVerificationScreen() {
               disabled={!isOtpComplete || isVerifying}
               style={[
                 styles.primaryButton,
-                { backgroundColor: (!isOtpComplete || isVerifying) ? '#CBD5E1' : theme.colors.primary }
+                { backgroundColor: (!isOtpComplete || isVerifying) ? theme.colors.outline : theme.colors.primary }
               ]}
               contentStyle={styles.buttonContent}
               labelStyle={styles.buttonLabel}
             >
-              Verify & Continue
+              {t('auth.verifyBtn')}
             </Button>
           </Surface>
         </ScrollView>
@@ -139,7 +143,7 @@ export default function OtpVerificationScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = (theme: AppTheme) => StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: theme.colors.background,
@@ -191,13 +195,13 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#0F172A',
+    color: theme.colors.text,
     marginBottom: 12,
     textAlign: 'center',
   },
   subtitleText: {
     fontSize: 15,
-    color: '#64748B',
+    color: theme.colors.secondaryText,
     marginBottom: 32,
     textAlign: 'center',
     lineHeight: 22,
@@ -212,11 +216,11 @@ const styles = StyleSheet.create({
     height: 56,
     borderWidth: 2,
     borderRadius: 12,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: theme.colors.surfaceVariant,
     fontSize: 24,
     fontWeight: '700',
     textAlign: 'center',
-    color: '#0F172A',
+    color: theme.colors.text,
   },
   resendContainer: {
     alignItems: 'center',
@@ -224,7 +228,7 @@ const styles = StyleSheet.create({
   },
   timerText: {
     fontSize: 14,
-    color: '#94A3B8',
+    color: theme.colors.secondaryText,
     fontWeight: '600',
   },
   resendLink: {

@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInput, Button, Divider, Surface } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { theme } from '../../utils/theme';
+import { useAppTheme, AppTheme } from '../../utils/theme';
 import { RootStackParamList } from '../../navigation/AppNavigator';
+import { useTranslation } from 'react-i18next';
+import { Text } from 'react-native';
 
 export default function LoginScreen() {
+  const theme = useAppTheme();
+  const styles = useStyles(theme);
+  const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [mobile, setMobile] = useState('');
 
@@ -31,49 +36,50 @@ export default function LoginScreen() {
             <View style={styles.logoContainer}>
               <MaterialIcons name="directions-bus" size={48} color={theme.colors.surface} />
             </View>
-            <Text style={styles.brandTitle}>SmartBus TN</Text>
-            <Text style={styles.brandTagline}>Smart Travel for Tamil Nadu</Text>
+            <Text style={styles.brandTitle}>{t('auth.brandTitle')}</Text>
+            <Text style={styles.brandTagline}>{t('auth.brandTagline')}</Text>
           </View>
 
           <Surface style={styles.card}>
-            <Text style={styles.welcomeText}>Welcome Back!</Text>
-            <Text style={styles.subtitleText}>Sign in to continue your journey</Text>
+            <Text style={styles.welcomeText}>{t('auth.welcome')}</Text>
+            <Text style={styles.subtitleText}>{t('auth.loginSubtitle')}</Text>
 
             <View style={styles.formContainer}>
-              <Text style={styles.label}>Mobile Number</Text>
+              <Text style={styles.label}>{t('auth.mobileLabel')}</Text>
               <TextInput
                 mode="outlined"
-                placeholder="Enter your mobile number"
+                placeholder={t('auth.mobilePlaceholder')}
                 value={mobile}
                 onChangeText={setMobile}
                 keyboardType="phone-pad"
                 left={<TextInput.Affix text="+91 " />}
-                outlineColor="#E2E8F0"
+                outlineColor={theme.colors.outline}
                 activeOutlineColor={theme.colors.primary}
                 style={styles.input}
+                textColor={theme.colors.text}
               />
 
               <Button
                 mode="contained"
                 onPress={onSendOtp}
                 disabled={mobile.length < 10}
-                style={[styles.primaryButton, { backgroundColor: mobile.length < 10 ? '#CBD5E1' : theme.colors.primary }]}
+                style={[styles.primaryButton, { backgroundColor: mobile.length < 10 ? theme.colors.outline : theme.colors.primary }]}
                 contentStyle={styles.buttonContent}
                 labelStyle={styles.buttonLabel}
               >
-                Send OTP
+                {t('auth.sendOtp')}
               </Button>
 
               <View style={styles.registerPrompt}>
-                <Text style={styles.promptText}>Don't have an account? </Text>
+                <Text style={styles.promptText}>{t('auth.noAccount')}</Text>
                 <TouchableOpacity onPress={onRegister}>
-                  <Text style={styles.registerText}>Register</Text>
+                  <Text style={styles.registerText}>{t('auth.register')}</Text>
                 </TouchableOpacity>
               </View>
 
               <View style={styles.dividerContainer}>
                 <Divider style={styles.divider} />
-                <Text style={styles.orText}>OR SIGN IN WITH</Text>
+                <Text style={styles.orText}>{t('auth.or')}</Text>
                 <Divider style={styles.divider} />
               </View>
 
@@ -84,9 +90,9 @@ export default function LoginScreen() {
                 style={styles.googleButton}
                 contentStyle={styles.buttonContent}
                 labelStyle={styles.googleButtonLabel}
-                textColor="#334155"
+                textColor={theme.colors.text}
               >
-                Google
+                {t('auth.google')}
               </Button>
             </View>
           </Surface>
@@ -96,7 +102,7 @@ export default function LoginScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = (theme: AppTheme) => StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: theme.colors.background,
@@ -131,12 +137,12 @@ const styles = StyleSheet.create({
   brandTitle: {
     fontSize: 24,
     fontWeight: '900',
-    color: '#0F172A',
+    color: theme.colors.text,
     marginBottom: 4,
   },
   brandTagline: {
     fontSize: 14,
-    color: '#64748B',
+    color: theme.colors.secondaryText,
     fontWeight: '500',
   },
   card: {
@@ -152,12 +158,12 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#0F172A',
+    color: theme.colors.text,
     marginBottom: 8,
   },
   subtitleText: {
     fontSize: 15,
-    color: '#64748B',
+    color: theme.colors.secondaryText,
     marginBottom: 32,
   },
   formContainer: {
@@ -166,11 +172,11 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#334155',
+    color: theme.colors.text,
     marginBottom: 8,
   },
   input: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: theme.colors.surfaceVariant,
     marginBottom: 24,
   },
   primaryButton: {
@@ -192,7 +198,7 @@ const styles = StyleSheet.create({
   },
   promptText: {
     fontSize: 14,
-    color: '#64748B',
+    color: theme.colors.secondaryText,
   },
   registerText: {
     fontSize: 14,
@@ -206,19 +212,19 @@ const styles = StyleSheet.create({
   },
   divider: {
     flex: 1,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: theme.colors.outline,
     height: 1.5,
   },
   orText: {
     marginHorizontal: 16,
-    color: '#94A3B8',
+    color: theme.colors.secondaryText,
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 1,
   },
   googleButton: {
     borderRadius: 14,
-    borderColor: '#E2E8F0',
+    borderColor: theme.colors.outline,
     borderWidth: 1.5,
   },
   googleButtonLabel: {

@@ -5,10 +5,14 @@ import { TextInput, Button, Divider, Surface, Checkbox } from 'react-native-pape
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { theme } from '../../utils/theme';
+import { useAppTheme, AppTheme } from '../../utils/theme';
 import { RootStackParamList } from '../../navigation/AppNavigator';
+import { useTranslation } from 'react-i18next';
 
 export default function RegisterScreen() {
+  const theme = useAppTheme();
+  const styles = useStyles(theme);
+  const { t } = useTranslation();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   
   const [fullName, setFullName] = useState('');
@@ -31,7 +35,7 @@ export default function RegisterScreen() {
           
           <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-              <MaterialIcons name="arrow-back" size={24} color="#0F172A" />
+              <MaterialIcons name="arrow-back" size={24} color={theme.colors.text} />
             </TouchableOpacity>
           </View>
 
@@ -39,38 +43,40 @@ export default function RegisterScreen() {
             <View style={styles.logoContainer}>
               <MaterialCommunityIcons name="account-plus" size={40} color={theme.colors.surface} />
             </View>
-            <Text style={styles.brandTitle}>SmartBus TN</Text>
-            <Text style={styles.brandTagline}>Smart Travel for Tamil Nadu</Text>
+            <Text style={styles.brandTitle}>{t('auth.brandTitle')}</Text>
+            <Text style={styles.brandTagline}>{t('auth.brandTagline')}</Text>
           </View>
 
           <Surface style={styles.card}>
-            <Text style={styles.welcomeText}>Create Account</Text>
-            <Text style={styles.subtitleText}>Join us for a smarter transit experience</Text>
+            <Text style={styles.welcomeText}>{t('auth.createAccount')}</Text>
+            <Text style={styles.subtitleText}>{t('auth.regSubtitle')}</Text>
 
             <View style={styles.formContainer}>
               
-              <Text style={styles.label}>Full Name</Text>
+              <Text style={styles.label}>{t('auth.fullName')}</Text>
               <TextInput
                 mode="outlined"
-                placeholder="e.g. John Doe"
+                placeholder={t('auth.namePlaceholder')}
                 value={fullName}
                 onChangeText={setFullName}
-                outlineColor="#E2E8F0"
+                outlineColor={theme.colors.outline}
                 activeOutlineColor={theme.colors.primary}
                 style={styles.input}
+                textColor={theme.colors.text}
               />
 
-              <Text style={styles.label}>Mobile Number</Text>
+              <Text style={styles.label}>{t('auth.mobileLabel')}</Text>
               <TextInput
                 mode="outlined"
-                placeholder="Enter your mobile number"
+                placeholder={t('auth.mobilePlaceholder')}
                 value={mobile}
                 onChangeText={setMobile}
                 keyboardType="phone-pad"
                 left={<TextInput.Affix text="+91 " />}
-                outlineColor="#E2E8F0"
+                outlineColor={theme.colors.outline}
                 activeOutlineColor={theme.colors.primary}
                 style={styles.input}
+                textColor={theme.colors.text}
               />
 
               <Text style={styles.label}>Email Address <Text style={styles.optionalText}>(Optional)</Text></Text>
@@ -81,9 +87,10 @@ export default function RegisterScreen() {
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
-                outlineColor="#E2E8F0"
+                outlineColor={theme.colors.outline}
                 activeOutlineColor={theme.colors.primary}
                 style={styles.input}
+                textColor={theme.colors.text}
               />
 
               <View style={styles.checkboxContainer}>
@@ -91,7 +98,7 @@ export default function RegisterScreen() {
                   status={acceptedTerms ? 'checked' : 'unchecked'}
                   onPress={() => setAcceptedTerms(!acceptedTerms)}
                   color={theme.colors.primary}
-                  uncheckedColor="#94A3B8"
+                  uncheckedColor={theme.colors.secondaryText}
                 />
                 <TouchableOpacity onPress={() => setAcceptedTerms(!acceptedTerms)} style={styles.termsTextContainer}>
                   <Text style={styles.termsText}>
@@ -104,11 +111,11 @@ export default function RegisterScreen() {
                 mode="contained"
                 onPress={onCreateAccount}
                 disabled={!isFormValid}
-                style={[styles.primaryButton, { backgroundColor: !isFormValid ? '#CBD5E1' : theme.colors.primary }]}
+                style={[styles.primaryButton, { backgroundColor: !isFormValid ? theme.colors.outline : theme.colors.primary }]}
                 contentStyle={styles.buttonContent}
                 labelStyle={styles.buttonLabel}
               >
-                Create Account
+                {t('auth.createAccount')}
               </Button>
 
               <View style={styles.dividerContainer}>
@@ -124,9 +131,9 @@ export default function RegisterScreen() {
                 style={styles.googleButton}
                 contentStyle={styles.buttonContent}
                 labelStyle={styles.googleButtonLabel}
-                textColor="#334155"
+                textColor={theme.colors.text}
               >
-                Google
+                {t('auth.google')}
               </Button>
             </View>
           </Surface>
@@ -136,7 +143,7 @@ export default function RegisterScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = (theme: AppTheme) => StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: theme.colors.background,
@@ -179,12 +186,12 @@ const styles = StyleSheet.create({
   brandTitle: {
     fontSize: 22,
     fontWeight: '900',
-    color: '#0F172A',
+    color: theme.colors.text,
     marginBottom: 4,
   },
   brandTagline: {
     fontSize: 13,
-    color: '#64748B',
+    color: theme.colors.secondaryText,
     fontWeight: '500',
   },
   card: {
@@ -200,12 +207,12 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#0F172A',
+    color: theme.colors.text,
     marginBottom: 8,
   },
   subtitleText: {
     fontSize: 15,
-    color: '#64748B',
+    color: theme.colors.secondaryText,
     marginBottom: 32,
   },
   formContainer: {
@@ -214,16 +221,16 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#334155',
+    color: theme.colors.text,
     marginBottom: 8,
   },
   optionalText: {
     fontSize: 12,
     fontWeight: '400',
-    color: '#94A3B8',
+    color: theme.colors.secondaryText,
   },
   input: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: theme.colors.surfaceVariant,
     marginBottom: 20,
   },
   checkboxContainer: {
@@ -238,7 +245,7 @@ const styles = StyleSheet.create({
   },
   termsText: {
     fontSize: 13,
-    color: '#64748B',
+    color: theme.colors.secondaryText,
     lineHeight: 20,
   },
   termsLink: {
@@ -263,19 +270,19 @@ const styles = StyleSheet.create({
   },
   divider: {
     flex: 1,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: theme.colors.outline,
     height: 1.5,
   },
   orText: {
     marginHorizontal: 16,
-    color: '#94A3B8',
+    color: theme.colors.secondaryText,
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 1,
   },
   googleButton: {
     borderRadius: 14,
-    borderColor: '#E2E8F0',
+    borderColor: theme.colors.outline,
     borderWidth: 1.5,
   },
   googleButtonLabel: {
