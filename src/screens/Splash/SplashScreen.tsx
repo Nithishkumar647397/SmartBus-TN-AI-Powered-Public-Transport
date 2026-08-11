@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MaterialIcons } from '@expo/vector-icons';
-import { theme } from '../../utils/theme';
+import { useAppTheme, AppTheme } from '../../utils/theme';
 
 type RootStackParamList = {
   Login: undefined;
@@ -12,6 +12,8 @@ type RootStackParamList = {
 
 export default function SplashScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const theme = useAppTheme();
+  const styles = useStyles(theme);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -31,7 +33,7 @@ export default function SplashScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = (theme: AppTheme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.primary,
@@ -39,7 +41,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logoContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.background,
     padding: 24,
     borderRadius: 100,
     marginBottom: 32,
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#FFFFFF', // keep white on primary background
     letterSpacing: 1.2,
     marginBottom: 12,
   },
