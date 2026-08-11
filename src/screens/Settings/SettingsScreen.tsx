@@ -41,22 +41,14 @@ export default function SettingsScreen() {
     <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.background }]} edges={['top']}>
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         
-        {/* Top Header Row */}
-        <View style={styles.headerRow}>
-          <View style={styles.headerLeft}>
-            <Avatar.Image size={40} source={{ uri: 'https://i.pravatar.cc/150?img=11' }} style={styles.avatar} />
-            <Text style={styles.appTitle}>SmartBus TN</Text>
-          </View>
-          <TouchableOpacity style={styles.notificationBtn}>
-            <MaterialCommunityIcons name="bell-outline" size={24} color="#334155" />
-            <View style={styles.notificationBadge} />
+        {/* Profile Header Section */}
+        <View style={styles.profileHeader}>
+          <Avatar.Image size={80} source={{ uri: 'https://i.pravatar.cc/150?img=11' }} style={styles.profileAvatar} />
+          <Text style={styles.profileName}>Nithish</Text>
+          <Text style={styles.profileMobile}>+91 98XXX XXX21</Text>
+          <TouchableOpacity style={styles.editProfileBtn}>
+            <Text style={styles.editProfileText}>Edit Profile</Text>
           </TouchableOpacity>
-        </View>
-
-        {/* Title Section */}
-        <View style={styles.titleSection}>
-          <Text style={styles.pageTitle}>Settings</Text>
-          <Text style={styles.pageSubtitle}>Manage your app experience and security.</Text>
         </View>
 
         {/* Preferences Section */}
@@ -185,6 +177,54 @@ export default function SettingsScreen() {
           </Surface>
         </View>
 
+        {/* Support & Feedback Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Support & Feedback</Text>
+          <Surface style={styles.card}>
+            
+            <TouchableOpacity style={[styles.row, styles.borderBottom]}>
+              <View style={styles.rowLeft}>
+                <View style={[styles.iconBox, { backgroundColor: '#F1F5F9' }]}>
+                  <MaterialCommunityIcons name="star-outline" size={20} color="#64748B" />
+                </View>
+                <Text style={styles.rowTitle}>Rate Us</Text>
+              </View>
+              <MaterialIcons name="chevron-right" size={24} color="#94A3B8" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.row, styles.borderBottom]}>
+              <View style={styles.rowLeft}>
+                <View style={[styles.iconBox, { backgroundColor: '#F1F5F9' }]}>
+                  <MaterialCommunityIcons name="lightbulb-on-outline" size={20} color="#64748B" />
+                </View>
+                <Text style={styles.rowTitle}>Suggest a Feature</Text>
+              </View>
+              <MaterialIcons name="chevron-right" size={24} color="#94A3B8" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.row, styles.borderBottom]}>
+              <View style={styles.rowLeft}>
+                <View style={[styles.iconBox, { backgroundColor: '#F1F5F9' }]}>
+                  <MaterialCommunityIcons name="alert-circle-outline" size={20} color="#64748B" />
+                </View>
+                <Text style={styles.rowTitle}>Report Issue</Text>
+              </View>
+              <MaterialIcons name="chevron-right" size={24} color="#94A3B8" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.row}>
+              <View style={styles.rowLeft}>
+                <View style={[styles.iconBox, { backgroundColor: '#F1F5F9' }]}>
+                  <MaterialCommunityIcons name="share-variant-outline" size={20} color="#64748B" />
+                </View>
+                <Text style={styles.rowTitle}>Share App</Text>
+              </View>
+              <MaterialIcons name="chevron-right" size={24} color="#94A3B8" />
+            </TouchableOpacity>
+
+          </Surface>
+        </View>
+
         {/* Log Out Button */}
         <Button
           mode="outlined"
@@ -211,62 +251,39 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 40,
   },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  profileHeader: {
     alignItems: 'center',
-    paddingTop: 16,
-    marginBottom: 24,
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatar: {
-    marginRight: 12,
-  },
-  appTitle: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#0F172A',
-  },
-  notificationBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#EF4444',
-    borderWidth: 1.5,
-    borderColor: '#FFFFFF',
-  },
-  titleSection: {
-    marginBottom: 32,
-  },
-  pageTitle: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: '#0F172A',
-    letterSpacing: -0.5,
+    paddingVertical: 32,
     marginBottom: 8,
   },
-  pageSubtitle: {
+  profileAvatar: {
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  profileName: {
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#0F172A',
+    marginBottom: 4,
+  },
+  profileMobile: {
     fontSize: 15,
     color: '#64748B',
+    marginBottom: 16,
+  },
+  editProfileBtn: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#F1F5F9',
+  },
+  editProfileText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#0F172A',
   },
   section: {
     marginBottom: 24,

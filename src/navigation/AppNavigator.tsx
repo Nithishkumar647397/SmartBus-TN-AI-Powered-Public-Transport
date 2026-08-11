@@ -19,7 +19,7 @@ export type BottomTabParamList = {
   HomeTab: undefined;
   LiveTab: undefined;
   AlertsTab: undefined;
-  ProfileTab: undefined;
+  SettingsTab: undefined;
 };
 
 export type RootStackParamList = {
@@ -55,7 +55,7 @@ function MainTabNavigator() {
           if (route.name === 'HomeTab') iconName = focused ? 'home' : 'home-outline';
           else if (route.name === 'LiveTab') iconName = focused ? 'radar' : 'map-marker-radius-outline';
           else if (route.name === 'AlertsTab') iconName = focused ? 'bell' : 'bell-outline';
-          else if (route.name === 'ProfileTab') iconName = focused ? 'account' : 'account-outline';
+          else if (route.name === 'SettingsTab') iconName = focused ? 'cog' : 'cog-outline';
           
           return (
             <View style={{ 
@@ -86,7 +86,7 @@ function MainTabNavigator() {
       <Tab.Screen name="HomeTab" component={HomeScreen} />
       <Tab.Screen name="LiveTab" children={() => <StubScreen name="Live" />} />
       <Tab.Screen name="AlertsTab" component={AlertsScreen} />
-      <Tab.Screen name="ProfileTab" component={SettingsScreen} />
+      <Tab.Screen name="SettingsTab" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
