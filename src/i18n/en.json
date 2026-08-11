@@ -58,5 +58,27 @@
     "notifyMe": "Notify me",
     "alertWhenAway": "Alert when 5 mins away from ",
     "setDestAlert": "Set your destination to enable stop alerts"
+  },
+  "alerts": {
+    "title": "Alerts",
+    "markAllRead": "Mark all as read",
+    "new": "New",
+    "sosSent": "SOS Alert Sent",
+    "justNow": "Just now",
+    "sosBody": "Your emergency alert was sent with your live location to <1>Emergency Contacts</1> and nearest authorities.",
+    "viewStatus": "View Status",
+    "cancelAlert": "Cancel Alert",
+    "busArriving": "Bus Arriving Soon",
+    "minsAgo2": "2 mins ago",
+    "busArrivingBody": "<1>570</1> to CMBT is arriving at <3>Navalur</3> in 5 minutes.",
+    "viewLiveMap": "View Live Map",
+    "dismiss": "Dismiss",
+    "routeUpdate": "Route Update",
+    "minsAgo15": "15 mins ago",
+    "routeUpdateBody": "Heavy traffic detected on OMR. Expect delays of 10-15 minutes for all buses heading towards Sholinganallur.",
+    "earlier": "Earlier",
+    "newFeature": "New Feature",
+    "yesterday": "Yesterday",
+    "newFeatureBody": "AI-powered crowd estimation now available for all routes. Check estimated capacity before you board!"
   }
 }
