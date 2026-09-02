@@ -20,7 +20,7 @@ export const darkTheme = {
   ...MD3DarkTheme,
   colors: {
     ...MD3DarkTheme.colors,
-    primary: '#0D1B3E',
+    primary: '#60A5FA', // Lighter, vibrant blue for visibility on dark backgrounds
     background: '#121826',
     surface: '#1E2433',
     text: '#F8FAFC',
