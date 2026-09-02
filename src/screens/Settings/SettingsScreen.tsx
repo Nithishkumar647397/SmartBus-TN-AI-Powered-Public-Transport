@@ -143,18 +143,35 @@ export default function SettingsScreen() {
             </View>
 
             {/* App Theme Row */}
-            <TouchableOpacity style={styles.row} onPress={handleChangeTheme}>
+            <View style={styles.row}>
               <View style={styles.rowLeft}>
                 <View style={styles.iconBox}>
                   <MaterialCommunityIcons name="palette-outline" size={20} color={theme.colors.secondaryText} />
                 </View>
                 <Text style={styles.rowTitle}>{t('settings.appTheme')}</Text>
               </View>
-              <View style={styles.rowRight}>
-                <Text style={styles.rowValue}>{getThemeDisplay()}</Text>
-                <MaterialIcons name="chevron-right" size={24} color={theme.colors.secondaryText} />
+              
+              <View style={styles.segmentedControl}>
+                <TouchableOpacity 
+                  style={[styles.segmentBtn, themeMode === 'light' && { backgroundColor: theme.colors.primary }]}
+                  onPress={() => setThemeMode('light')}
+                >
+                  <Text style={[styles.segmentText, themeMode === 'light' && { color: '#FFFFFF' }]}>{t('settings.themeLight') || 'Light'}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.segmentBtn, themeMode === 'dark' && { backgroundColor: theme.colors.primary }]}
+                  onPress={() => setThemeMode('dark')}
+                >
+                  <Text style={[styles.segmentText, themeMode === 'dark' && { color: '#FFFFFF' }]}>{t('settings.themeDark') || 'Dark'}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.segmentBtn, themeMode === 'system' && { backgroundColor: theme.colors.primary }]}
+                  onPress={() => setThemeMode('system')}
+                >
+                  <Text style={[styles.segmentText, themeMode === 'system' && { color: '#FFFFFF' }]}>{t('settings.themeSystem') || 'Auto'}</Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+            </View>
 
           </Surface>
         </View>
