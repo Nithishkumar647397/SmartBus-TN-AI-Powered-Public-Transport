@@ -71,8 +71,9 @@ function MainTabNavigator() {
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.secondaryText || '#757575',
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopWidth: 0,
+          backgroundColor: theme.colors.surface,
+          borderTopColor: theme.colors.outline,
+          borderTopWidth: 1,
           elevation: 8,
           shadowColor: '#000',
           shadowOpacity: 0.1,
@@ -92,8 +93,16 @@ function MainTabNavigator() {
 }
 
 export default function AppNavigator() {
+  const theme = useAppTheme();
+
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Splash">
+    <Stack.Navigator 
+      screenOptions={{ 
+        headerShown: false,
+        contentStyle: { backgroundColor: theme.colors.background }
+      }} 
+      initialRouteName="Splash"
+    >
       <Stack.Screen name="Splash" component={SplashScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="OtpVerification" component={OtpVerificationScreen} />

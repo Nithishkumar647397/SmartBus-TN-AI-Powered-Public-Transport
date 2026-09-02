@@ -23,6 +23,9 @@ const AppContent = () => {
     currentTheme = darkTheme;
   }
 
+  const { DarkTheme, DefaultTheme } = require('@react-navigation/native');
+  const navigationTheme = currentTheme.dark ? DarkTheme : DefaultTheme;
+
   return (
     <PaperProvider 
       theme={currentTheme}
@@ -30,7 +33,7 @@ const AppContent = () => {
         icon: props => <MaterialCommunityIcons {...props} />,
       }}
     >
-      <NavigationContainer>
+      <NavigationContainer theme={navigationTheme}>
         <AppNavigator />
       </NavigationContainer>
     </PaperProvider>
