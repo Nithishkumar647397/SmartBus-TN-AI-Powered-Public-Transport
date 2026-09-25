@@ -6,7 +6,7 @@ import { Button, Surface } from 'react-native-paper';
 // TEMPORARY: SOS does not yet send real location data or contact emergency services. Wire to backend + real contacts before production.
 
 interface SOSButtonProps {
-  onSOSConfirmed: () => voi;
+  onSOSConfirmed: () => void;
 }
 
 export default function SOSButton({ onSOSConfirmed }: SOSButtonProps) {
