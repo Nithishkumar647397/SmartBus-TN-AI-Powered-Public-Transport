@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, TextInput, FlatList, TouchableOpacity, SafeAreaView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Text, Button, Surface } from 'react-native-paper';
 import { useAppTheme, AppTheme } from '../../utils/theme';
 import { MaterialIcons } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/AppNavigator';
-import { MOCK_PLACES } from '../../data/mockPlaces';
 import { useTranslation } from 'react-i18next';
+import { getStops, Stop } from '../../api/client';
+import LoadingState from '../../components/LoadingState';
+import EmptyState from '../../components/EmptyState';
+import ErrorState from '../../components/ErrorState';
 
 type LocationPickerScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LocationPicker'>;
 
@@ -20,20 +23,35 @@ export default function LocationPickerScreen({ navigation }: Props) {
   const { t } = useTranslation();
   
   const [searchQuery, setSearchQuery] = useState('');
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [stops, setStops] = useState<Stop[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const searchStops = useCallback(async (query: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const results = await getStops(query.trim() || undefined);
+      setStops(results);
+    } catch (err: any) {
+      setError(err?.message || 'Failed to load stops.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Initial fetch of popular / default stops from DB
+    searchStops('');
+  }, [searchStops]);
 
   const handleSearch = (text: string) => {
     setSearchQuery(text);
-    if (text.length > 0) {
-      const filtered = MOCK_PLACES.filter(town => town.toLowerCase().includes(text.toLowerCase()));
-      setSuggestions(filtered);
-    } else {
-      setSuggestions([]);
-    }
+    searchStops(text);
   };
 
-  const handleSelectLocation = (location: string) => {
-    navigation.navigate('DestinationResults', { origin: location });
+  const handleSelectLocation = (locationName: string) => {
+    navigation.navigate('DestinationResults', { origin: locationName });
   };
 
   return (
@@ -50,19 +68,25 @@ export default function LocationPickerScreen({ navigation }: Props) {
 
         <View style={styles.content}>
           <View style={styles.heroContainer}>
-            <MaterialIcons name="my-location" size={80} color={theme.colors.primary} />
+            <MaterialIcons name="my-location" size={72} color={theme.colors.primary} />
           </View>
           
           <Text style={styles.title}>
             {t('location.pickerTitle')}
           </Text>
           <Text style={styles.subtitle}>
-            We'll show you buses near you in real time
+            Select your origin stop to view connecting buses in real time
           </Text>
 
           <Button 
             mode="contained" 
-            onPress={() => handleSelectLocation('My Current Location')}
+            onPress={() => {
+              if (stops.length > 0) {
+                handleSelectLocation(stops[0].name);
+              } else {
+                handleSelectLocation('My Current Location');
+              }
+            }}
             style={[styles.primaryButton, { backgroundColor: theme.colors.primary }]}
             contentStyle={styles.buttonContent}
             icon="crosshairs-gps"
@@ -72,11 +96,11 @@ export default function LocationPickerScreen({ navigation }: Props) {
 
           <View style={styles.dividerContainer}>
             <View style={styles.divider} />
-            <Text style={styles.dividerText}>or</Text>
+            <Text style={styles.dividerText}>or select a registered stop</Text>
             <View style={styles.divider} />
           </View>
 
-          <Surface style={styles.searchContainer} >
+          <Surface style={styles.searchContainer}>
             <MaterialIcons name="search" size={24} color={theme.colors.secondaryText} style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
@@ -85,33 +109,48 @@ export default function LocationPickerScreen({ navigation }: Props) {
               value={searchQuery}
               onChangeText={handleSearch}
             />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity onPress={() => handleSearch('')}>
+                <MaterialIcons name="close" size={20} color={theme.colors.secondaryText} />
+              </TouchableOpacity>
+            )}
           </Surface>
 
-          {searchQuery.length > 0 && suggestions.length === 0 && (
-            <Surface style={[styles.suggestionsContainer, { padding: 16 }]}>
-              <Text style={{ color: theme.colors.secondaryText, textAlign: 'center' }}>No results found</Text>
-            </Surface>
-          )}
-
-          {suggestions.length > 0 && (
+          {loading ? (
+            <LoadingState message="Searching verified stops..." />
+          ) : error ? (
+            <ErrorState message={error} onRetry={() => searchStops(searchQuery)} />
+          ) : stops.length === 0 ? (
+            <EmptyState 
+              icon="map-marker-question-outline"
+              title="No stops found"
+              description={searchQuery ? `No stops match "${searchQuery}" in the database.` : 'No stops registered in database.'}
+            />
+          ) : (
             <Surface style={styles.suggestionsContainer}>
               <FlatList
-                data={suggestions}
-                keyExtractor={(item) => item}
+                data={stops}
+                keyExtractor={(item) => item.id}
                 keyboardShouldPersistTaps="handled"
                 renderItem={({ item }) => (
                   <TouchableOpacity 
                     style={styles.suggestionItem} 
-                    onPress={() => handleSelectLocation(item)}
+                    onPress={() => handleSelectLocation(item.name)}
                   >
-                    <MaterialIcons name="location-on" size={20} color={theme.colors.secondaryText} />
-                    <Text style={styles.suggestionText}>{item}</Text>
+                    <View style={[styles.stopIconBg, { backgroundColor: theme.colors.surfaceVariant }]}>
+                      <MaterialIcons name="directions-bus" size={20} color={theme.colors.primary} />
+                    </View>
+                    <View style={styles.stopTextCol}>
+                      <Text style={styles.suggestionText}>{item.name}</Text>
+                      <Text style={styles.stopCoordText}>GPS: {item.lat.toFixed(4)}, {item.lng.toFixed(4)}</Text>
+                    </View>
                   </TouchableOpacity>
                 )}
                 ItemSeparatorComponent={() => <View style={styles.separator} />}
               />
             </Surface>
           )}
+
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -119,114 +158,27 @@ export default function LocationPickerScreen({ navigation }: Props) {
 }
 
 const useStyles = (theme: AppTheme) => StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  container: {
-    flex: 1,
-  },
-  header: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 8,
-  },
-  backButton: {
-    padding: 8,
-    marginLeft: -8,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 20,
-  },
-  heroContainer: {
-    alignItems: 'center',
-    marginBottom: 32,
-    marginTop: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    marginBottom: 8,
-    textAlign: 'center',
-    color: theme.colors.text,
-  },
-  subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 32,
-    lineHeight: 24,
-    color: theme.colors.secondaryText,
-  },
-  primaryButton: {
-    borderRadius: 12,
-    marginBottom: 24,
-  },
-  buttonContent: {
-    paddingVertical: 8,
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: theme.colors.outline,
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    fontSize: 14,
-    color: theme.colors.secondaryText,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    height: 56,
-    backgroundColor: theme.colors.surface,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    shadowOffset: {width:0, height:4},
-    elevation: 2,
-  },
-  searchIcon: {
-    marginRight: 12,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    height: '100%',
-    color: theme.colors.text,
-  },
-  suggestionsContainer: {
-    marginTop: 8,
-    borderRadius: 16,
-    maxHeight: 200,
-    overflow: 'hidden',
-    backgroundColor: theme.colors.surface,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    shadowOffset: {width:0, height:6},
-    elevation: 4,
-  },
-  suggestionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-  },
-  suggestionText: {
-    marginLeft: 12,
-    fontSize: 16,
-    color: theme.colors.text,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: theme.colors.outline,
-  }
+  safeArea: { flex: 1, backgroundColor: theme.colors.background },
+  container: { flex: 1 },
+  header: { paddingHorizontal: 16, paddingTop: 16 },
+  backButton: { padding: 8, marginLeft: -8 },
+  content: { flex: 1, paddingHorizontal: 24, paddingTop: 12 },
+  heroContainer: { alignItems: 'center', marginVertical: 12 },
+  title: { fontSize: 24, fontWeight: '900', textAlign: 'center', marginBottom: 8, color: theme.colors.text },
+  subtitle: { fontSize: 14, color: theme.colors.secondaryText, textAlign: 'center', marginBottom: 20 },
+  primaryButton: { borderRadius: 16, marginBottom: 16 },
+  buttonContent: { height: 50 },
+  dividerContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 14 },
+  divider: { flex: 1, height: 1, backgroundColor: theme.colors.outline },
+  dividerText: { marginHorizontal: 12, color: theme.colors.secondaryText, fontSize: 12, fontWeight: '600' },
+  searchContainer: { flexDirection: 'row', alignItems: 'center', borderRadius: 16, paddingHorizontal: 16, height: 54, backgroundColor: theme.colors.surface, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, shadowOffset: {width:0, height:4}, elevation: 2, marginBottom: 12 },
+  searchIcon: { marginRight: 12 },
+  searchInput: { flex: 1, fontSize: 16, height: '100%', color: theme.colors.text },
+  suggestionsContainer: { flex: 1, borderRadius: 16, overflow: 'hidden', backgroundColor: theme.colors.surface, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: {width:0, height:4}, elevation: 3, marginBottom: 16 },
+  suggestionItem: { flexDirection: 'row', alignItems: 'center', padding: 14 },
+  stopIconBg: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
+  stopTextCol: { flex: 1 },
+  suggestionText: { fontSize: 15, fontWeight: '700', color: theme.colors.text },
+  stopCoordText: { fontSize: 12, color: theme.colors.secondaryText, marginTop: 2 },
+  separator: { height: 1, backgroundColor: theme.colors.outline },
 });

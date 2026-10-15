@@ -10,6 +10,7 @@ import RegisterScreen from '../screens/Auth/RegisterScreen';
 import SettingsScreen from '../screens/Settings/SettingsScreen';
 import AlertsScreen from '../screens/Alerts/AlertsScreen';
 import HomeScreen from '../screens/Home/HomeScreen';
+import LiveTrackingScreen from '../screens/LiveTracking/LiveTrackingScreen';
 import LocationPickerScreen from '../screens/Location/LocationPickerScreen';
 import DestinationResultsScreen from '../screens/Location/DestinationResultsScreen';
 import BusDetailsScreen from '../screens/BusDetails/BusDetailsScreen';
@@ -85,7 +86,7 @@ function MainTabNavigator() {
       })}
     >
       <Tab.Screen name="HomeTab" component={HomeScreen} />
-      <Tab.Screen name="LiveTab" children={() => <StubScreen name="Live" />} />
+      <Tab.Screen name="LiveTab" component={LiveTrackingScreen} />
       <Tab.Screen name="AlertsTab" component={AlertsScreen} />
       <Tab.Screen name="SettingsTab" component={SettingsScreen} />
     </Tab.Navigator>
